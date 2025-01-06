@@ -1,0 +1,48 @@
+#include "MyActor_05.h"
+
+AMyActor_05::AMyActor_05()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+void AMyActor_05::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	FVector tmpPos = FVector(startPos.X, startPos.Y, GetActorLocation().Z);
+
+	SetActorLocation(tmpPos);
+}
+
+void AMyActor_05::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (count < 10) {
+		timer += DeltaTime;
+	}
+
+	if (timer > 1) {
+		Move();
+	}
+}
+
+void AMyActor_05::Move()
+{
+	timer = 0.f;
+	count++;
+
+	FVector tmpPos = GetActorLocation();
+	tmpPos.X += Step();
+	tmpPos.Y += Step();
+	SetActorLocation(tmpPos);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d th position : %.0f, %.0f"), count, tmpPos.X, tmpPos.Y);
+}
+
+int32 AMyActor_05::Step()
+{
+	return FMath::RandRange(0, 1);
+}
