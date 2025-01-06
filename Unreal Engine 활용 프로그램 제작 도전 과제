@@ -1,0 +1,78 @@
+#include "MyActor_05.h"
+
+AMyActor_05::AMyActor_05()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+void AMyActor_05::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	FVector tmpPos = FVector(startPos.X, startPos.Y, GetActorLocation().Z);
+
+	SetActorLocation(tmpPos);
+}
+
+void AMyActor_05::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (count < 10) {
+		timer += DeltaTime;
+	}
+
+	if (timer > 1) {
+		Move();
+	}
+}
+
+void AMyActor_05::Move()
+{
+	timer = 0.f;
+	count++;
+
+	FVector tmpPos = GetActorLocation();
+	tmpPos.X += Step();
+	tmpPos.Y += Step();
+	float curDist = Distance(GetActorLocation(), tmpPos);
+	totDist += curDist;
+	SetActorLocation(tmpPos);
+
+	FString curEv = "";
+	if (CreateEvent() == 1) {
+		curEv += " // Event!";
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%d th Moving // position : %.0f, %.0f // distance : %.2f%s"), count, tmpPos.X, tmpPos.Y, curDist, *curEv);
+
+	if (count == 10) {
+		UE_LOG(LogTemp, Warning, TEXT("Total Distance : %.2f // Total Event Count : %d"), totDist, evCnt);
+	}
+}
+
+int32 AMyActor_05::Step()
+{
+	return FMath::RandRange(0, 1);
+}
+
+float AMyActor_05::Distance(FVector lastPos, FVector curPos)
+{
+	float dx = curPos.X - lastPos.X;
+	float dy = curPos.Y - lastPos.Y;
+
+	return FMath::Sqrt(dx * dx + dy * dy);
+}
+
+int32 AMyActor_05::CreateEvent()
+{
+	double RandomValue = FMath::FRandRange(0.f, 100.f);
+	if (RandomValue < 50.f) {
+		evCnt++;
+		return 1;
+	}
+
+	return 0;
+}
