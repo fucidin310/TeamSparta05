@@ -1,0 +1,34 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "MyActor_05.generated.h"
+
+UCLASS()
+class TEAMSPARTA_API AMyActor_05 : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	AMyActor_05();
+
+	FVector2D startPos = FVector2D(0, 0);
+	float timer = 0.0f;
+	int32 count = 0;
+	int32 evCnt = 0;
+	float totDist = 0;
+
+protected:
+	virtual void BeginPlay() override;
+
+public:	
+	virtual void Tick(float DeltaTime) override;
+
+	void Move();
+
+	int32 Step();
+
+	float Distance(FVector lastPos, FVector curPos);
+
+	int32 CreateEvent();
+};
